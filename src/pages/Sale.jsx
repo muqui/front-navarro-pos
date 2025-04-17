@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Menu from '../components/Menu';
 
 export const Sale = () => {
     const [productos, setProductos] = useState([
@@ -43,7 +44,10 @@ export const Sale = () => {
   };
 
   return (
+    <>
+    <Menu/>
     <div className="container mt-4 pb-5">
+     
       {/* Línea 1: Código de barras */}
       <div className="row align-items-center mb-3">
         <div className="col-auto">
@@ -74,12 +78,12 @@ export const Sale = () => {
               <ul className="nav nav-tabs" id="myTab" role="tablist">
                 <li className="nav-item" role="presentation">
                   <button className="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab">
-                    Productos
+                  Ticket 1
                   </button>
                 </li>
                 <li className="nav-item" role="presentation">
                   <button className="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab">
-                    Otros
+                    Ticket 2
                   </button>
                 </li>
               </ul>
@@ -166,5 +170,6 @@ export const Sale = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
