@@ -28,7 +28,7 @@ export const orderMock = [
       status: 'pendiente'
     },
     {
-        id: 1,
+        id: 3,
       date: '10/04/2025',
       client: 'Alberto',
       folio: '1004-0001',

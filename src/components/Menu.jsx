@@ -1,14 +1,21 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ventasIcon from '../assets/menu/ventas.png'; 
 import productsIcon from '../assets/menu/productos.png'; 
 import inventoryIcon from '../assets/menu/inventario.png'; 
 import settingsIcon from '../assets/menu/config.png'; 
 import reportsIcon from '../assets/menu/reportes.png'; 
 import repairIcon from '../assets/menu/reparaciones.png'; 
-
+import closeIcon from '../assets/close.png';
+import { useAuthStore } from '../store/auth'; 
 
 const Menu = () => {
+    const logout = useAuthStore((state) => state.logout);
+    const navigate = useNavigate();
+    const handleCloseMenu = () => {
+        logout();
+        navigate('/'); 
+    };
    
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
@@ -56,6 +63,13 @@ const Menu = () => {
                                 </Link>
                         </li>
                     </ul>
+                    <button
+                        className="btn btn-link ms-auto"
+                        onClick={handleCloseMenu}
+                        style={{ border: 'none', padding: 0 }}
+                    >
+                        <img src={closeIcon} alt="Cerrar" width="30" height="30" />
+                    </button>
                 </div>
             </div>
         </nav>

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Menu from '../components/Menu'
 import { OrderTable } from '../mocks/OrderTable'
-import Modal from '../components/Modal'; // Ajusta el path si es necesario
-import { CreateOrder } from './CreateOrder';
+import Modal from '../components/Modal'; 
+import { OrderServiceForm } from '../components/OrderServiceForm';
 export const Repair = () => {
 
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +31,7 @@ export const Repair = () => {
     </div>
 
     <Modal showModal={showModal} handleClose={closeModal}>
- <CreateOrder /> 
+ <OrderServiceForm /> 
 </Modal>
      
     </>

@@ -2,7 +2,7 @@ import React from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-export const CreateOrder = () => {
+export const OrderServiceForm = () => {
   const formik = useFormik({
     initialValues: {
       service: '',
@@ -58,11 +58,11 @@ export const CreateOrder = () => {
 
   return (
     <div className="container my-5">
-      <h2 className="mb-4">Order Service Form</h2>
+      <h2 className="mb-4">Orden de servicio</h2>
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           {fields.map(([field, label]) => (
-            <div className="col-md-4 mb-3" key={field}>
+            <div className="col-md-3 mb-3" key={field}>
               <label htmlFor={field} className="form-label">
                 {label}
               </label>
@@ -81,7 +81,7 @@ export const CreateOrder = () => {
             </div>
           ))}
 
-          <div className="col-md-4 mb-3">
+          <div className="col-md-3 mb-3">
             <label htmlFor="date" className="form-label">
               Date
             </label>

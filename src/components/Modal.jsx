@@ -31,7 +31,7 @@ const modalContentStyle = {
   backgroundColor: 'white',
   padding: '20px',
   borderRadius: '10px',
-  width: '900px',
+  width: '90%',
   maxWidth: '90%',
   zIndex: 1051,
   maxHeight: '99vh',  // Agregado para limitar la altura máxima del modal

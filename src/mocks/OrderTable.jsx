@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { orderMock } from "../mockData/order";
+import Modal from '../components/Modal';
+import { OrderServiceForm } from '../components/OrderServiceForm';
 export const OrderTable = () => {
      const [orders, setOrders] = useState(orderMock);
+       const [showModal, setShowModal] = useState(false);
+     
+       const openModal = () => {
+         setShowModal(true);
+       };
+     
+       const closeModal = () => {
+         setShowModal(false);
+       };
   return (
     <div className="container mt-4">
      
@@ -34,12 +45,16 @@ export const OrderTable = () => {
                <td>{order.cost_part}</td>
                <td>{order.profit}</td>
                <td>{order.status}</td>
-               <td><button className="btn btn-sm btn-success " onClick>Ver</button></td> 
+               <td><button className="btn btn-sm btn-success " onClick={openModal}>Ver</button></td> 
              
             </tr>
           ))}
       </tbody>
     </table>
+    <Modal showModal={showModal} handleClose={closeModal}>
+ <OrderServiceForm /> 
+</Modal>
+     
   </div>
   )
 }

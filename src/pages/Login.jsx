@@ -2,12 +2,12 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import logo from '../assets/navarro-pos-logo.png';
-import { useAuthStore } from '../store/store';
+import { useAuthStore } from '../store/auth';
 import { buildUrl, API_URLS } from '../config/apiConfig'; // Importa la configuración
 import { useNavigate } from 'react-router-dom';
 // Esquema de validación con Yup
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email('Email inválido').required('El email es obligatorio'),
+  identifier: Yup.string().email('Email inválido').required('El email es obligatorio'),
   password: Yup.string().min(6, 'Mínimo 6 caracteres').required('La contraseña es obligatoria'),
 });
 
@@ -15,10 +15,10 @@ function Login() {
   const setToken = useAuthStore((state) => state.setToken);
   const navigate = useNavigate(); 
   const handleLogin = async (values) => {
-    const { email, password } = values;
+    const { identifier, password } = values;
 
     try {
-      const response = await axios.post(buildUrl(API_URLS.auth), { email, password });
+      const response = await axios.post(buildUrl(API_URLS.auth), { identifier, password });
 
       // Si la respuesta es exitosa, guardamos el token
       setToken(response.data.token);
@@ -48,7 +48,7 @@ function Login() {
             </div>
 
             <Formik
-              initialValues={{ email: 'muqui@hotmail.com', password: '123456' }}
+              initialValues={{ identifier: 'muqui@hotmail.com', password: '123456' }}
               validationSchema={validationSchema}
               onSubmit={handleLogin}
             >
@@ -60,13 +60,13 @@ function Login() {
                       type="email"
                       id="email"
                       name="email"
-                      value={values.email}
+                      value={values.identifier}
                       onChange={handleChange('email')}
                       onBlur={handleBlur('email')}
-                      className={`form-control ${touched.email && errors.email ? 'is-invalid' : ''}`}
+                      className={`form-control ${touched.identifier && errors.identifier ? 'is-invalid' : ''}`}
                     />
                     {touched.email && errors.email && (
-                      <div className="invalid-feedback">{errors.email}</div>
+                      <div className="invalid-feedback">{errors.identifier}</div>
                     )}
                   </div>
 
