@@ -1,13 +1,10 @@
 import React, { useState } from "react";
+import { productosMock } from "../mockData/products";
 export const FindProduct = () => {
 
-  const productosIniciales = [
-    { id: 1, nombre: "Manzana", precio: 1.2 },
-    { id: 2, nombre: "Banana", precio: 0.8 },
-    { id: 3, nombre: "Naranja", precio: 1.0 },
-  ];
+  const [productos, setProductos] = useState(productosMock);
   const [busqueda, setBusqueda] = useState("");
-  const productosFiltrados = productosIniciales.filter((p) =>
+  const productosFiltrados = productos.filter((p) =>
     p.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
   
@@ -28,7 +25,7 @@ export const FindProduct = () => {
       <table className="table table-bordered table-striped">
         <thead className="table-dark">
           <tr>
-            <th>ID</th>
+          
             <th>Nombre</th>
             <th>Precio</th>
           </tr>
@@ -36,7 +33,7 @@ export const FindProduct = () => {
         <tbody>
           {productosFiltrados.map((p) => (
             <tr key={p.id}>
-              <td>{p.id}</td>
+            
               <td>{p.nombre}</td>
               <td>${p.precio.toFixed(2)}</td>
             </tr>

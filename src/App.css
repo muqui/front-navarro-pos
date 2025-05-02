@@ -5,3 +5,6 @@
     box-sizing: border-box;
   }
 
+  .modal-dialog-custom {
+    max-width: 95%;
+  }

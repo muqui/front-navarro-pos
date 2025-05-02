@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import closeIcon from '../assets/close.png';
 
 const Modal = ({ showModal, handleClose, children }) => {
   useEffect(() => {
@@ -25,17 +26,21 @@ const Modal = ({ showModal, handleClose, children }) => {
 
   return (
     <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1" style={{ zIndex: 1050 }}>
-      <div className="modal-dialog mt-3 mt-sm-5">
-        <div className="modal-content position-relative p-3">
+      <div className="modal-dialog  modal-dialog-custom ">
+        <div className="modal-content position-relative p-4">
           <button
             type="button"
-           className="p-0  btn position-absolute top-0 end-0 me-2 d-flex align-items-center justify-content-center"
+           className=" p-0 btn position-absolute top-0 end-0 me-2 d-flex align-items-center justify-content-center "
             aria-label="Close"
             onClick={() => {
               console.log('Botón cerrar clickeado');
               handleClose();
             }}
-          ><i className="bi bi-x fs-1"></i></button>
+          
+          >
+            <img src={closeIcon} alt="Cerrar" width="30" height="30" />
+            
+            </button>
           <div className="modal-body">{children}</div>
         </div>
       </div>
