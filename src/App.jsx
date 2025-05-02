@@ -9,6 +9,9 @@ import { Config } from './pages/Config';
 import { Repair } from './pages/Repair';
 import { Report } from './pages/Report';
 import { PrivateRoute } from './components/PrivateRoute';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 function App() {
  
 

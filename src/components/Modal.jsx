@@ -1,55 +1,46 @@
-// Modal.js
-import React from 'react';
+import React, { useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Modal = ({ showModal, handleClose, children }) => {
+  useEffect(() => {
+    // Función que maneja el evento de la tecla Esc
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    // Solo agregamos el listener si el modal se muestra
+    if (showModal) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    // Limpiar el listener cuando el componente se desmonte o el modal se cierre
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showModal, handleClose]);
+
   if (!showModal) return null;
 
   return (
-    <div style={modalOverlayStyle}>
-      <div style={modalContentStyle}>
-        <button onClick={handleClose} style={closeButtonStyle}>x</button>
-        {children}
+    <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1" style={{ zIndex: 1050 }}>
+      <div className="modal-dialog mt-3 mt-sm-5">
+        <div className="modal-content position-relative p-3">
+          <button
+            type="button"
+           className="p-0  btn position-absolute top-0 end-0 me-2 d-flex align-items-center justify-content-center"
+            aria-label="Close"
+            onClick={() => {
+              console.log('Botón cerrar clickeado');
+              handleClose();
+            }}
+          ><i className="bi bi-x fs-1"></i></button>
+          <div className="modal-body">{children}</div>
+        </div>
       </div>
     </div>
   );
-};
-
-const modalOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 1050,
-};
-
-const modalContentStyle = {
-  backgroundColor: 'white',
-  padding: '20px',
-  borderRadius: '10px',
-  width: '90%',
-  maxWidth: '90%',
-  zIndex: 1051,
-  maxHeight: '99vh',  // Agregado para limitar la altura máxima del modal
-  overflowY: 'auto',  // Esto permitirá el scroll si el contenido excede el máximo
-
-};
-
-const closeButtonStyle = {
-  position: 'absolute',
-  top: '10px',
-  right: '10px',
-  padding: '5px 5px',
-  backgroundColor: 'transparent',  // Fondo transparente
-  color: 'white',
-  fontSize: '44px',  // Tamaño de la X
-  border: 'none',
-  borderRadius: '1%',
-  lineHeight: '1',  
 };
 
 export default Modal;

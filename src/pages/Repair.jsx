@@ -12,6 +12,7 @@ export const Repair = () => {
   };
 
   const closeModal = () => {
+    console.log('cerrar');
     setShowModal(false);
   };
 
