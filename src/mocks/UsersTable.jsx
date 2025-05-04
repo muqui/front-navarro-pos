@@ -18,9 +18,9 @@ export const UsersTable = () => {
         <table className="table table-bordered">
         <thead className="table-dark">
           <tr>
-            <th>Nombre</th>
+            <th className='d-none d-md-table-cell'>Nombre</th>
             <th>Correo</th>
-            <th>Nivel</th>
+            <th className='d-none d-md-table-cell'>Nivel</th>
             <th></th>
            
           </tr>
@@ -29,9 +29,9 @@ export const UsersTable = () => {
         {users.map((user) => (
             <tr key={user.id}>
               
-              <td>{user.name}</td>
+              <td className='d-none d-md-table-cell'>{user.name}</td>
               <td>{user.email}</td>
-              <td>{user.rol}</td>
+              <td className='d-none d-md-table-cell'>{user.rol}</td>
                 
                    
               <td><button className="btn btn-sm btn-success " onClick={openModal} >Ver</button></td>

@@ -9,7 +9,7 @@ export const IncomeTable = () => {
     <table className="table table-bordered">
       <thead className="table-dark">
         <tr>
-          <th>Fecha</th>
+          <th className="d-none d-md-table-cell" >Fecha</th>
           <th>Descripcion</th>
           <th>Nombre</th>
           <th>Cantidad</th>
@@ -18,7 +18,7 @@ export const IncomeTable = () => {
       <tbody>
       {income.map((income) => (
             <tr key={income.id}>
-               <td>{income.date}</td>
+               <td className="d-none d-md-table-cell">{income.date}</td>
                <td>{income.description}</td>
                <td>{income.name}</td>
                <td>{income.amount}</td>

@@ -10,8 +10,8 @@ export const CompleteTable = () => {
       <thead className="table-dark">
         <tr>
           <th>Nombre</th>
-          <th>Ingresos</th>
-          <th>Egresos</th>
+          <th className="d-none d-md-table-cell" >Ingresos</th>
+          <th className="d-none d-md-table-cell" >Egresos</th>
           <th>Total</th>
         </tr>
       </thead>
@@ -19,8 +19,8 @@ export const CompleteTable = () => {
       {complete.map((complete) => (
             <tr key={complete.id}>
                <td>{complete.name}</td>
-               <td>{complete.income}</td>
-               <td>{complete.expense}</td>
+               <td className="d-none d-md-table-cell">{complete.income}</td>
+               <td className="d-none d-md-table-cell">{complete.expense}</td>
                <td>{complete.total}</td>
             </tr>
           ))}

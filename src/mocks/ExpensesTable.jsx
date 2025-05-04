@@ -9,7 +9,7 @@ export const ExpensesTable = () => {
     <table className="table table-bordered">
       <thead className="table-dark">
         <tr>
-          <th>Fecha</th>
+          <th className="d-none d-md-table-cell" >Fecha</th>
           <th>Descripcion</th>
           <th>Nombre</th>
           <th>Cantidad</th>
@@ -18,7 +18,7 @@ export const ExpensesTable = () => {
       <tbody>
       {expenses.map((expense) => (
             <tr key={expense.id}>
-               <td>{expense.date}</td>
+               <td className="d-none d-md-table-cell">{expense.date}</td>
                <td>{expense.description}</td>
                <td>{expense.name}</td>
                <td>{expense.amount}</td>

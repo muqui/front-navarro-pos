@@ -5,14 +5,23 @@ export const Discount = () => {
   const [discount, setDiscount] = useState(0);
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 px-0">
       <h4>Tipo de precio</h4>
 
       <div className="d-flex flex-wrap gap-2 mb-4">
-        <button className="btn btn-outline-primary">Precio Mayoreo</button>
-        <button className="btn btn-outline-primary">Precio Compra</button>
-        <button className="btn btn-outline-primary">Precio Normal</button>
-        <button className="btn btn-outline-primary">Porcentaje</button>
+        <button className="btn btn-outline-primary btn-sm btn-md-lg">
+          <span class="d-inline d-sm-none">Mayoreo</span>
+          <span class="d-none d-sm-inline">Precio Mayoreo</span>
+        </button>
+        <button className="btn btn-outline-primary btn-sm btn-md-lg">
+        <span class="d-inline d-sm-none">Compra</span>
+        <span class="d-none d-sm-inline">Precio Compra</span>
+          </button>
+        <button className="btn btn-outline-primary btn-sm btn-md-lg">
+        <span class="d-inline d-sm-none">Normal</span>
+        <span class="d-none d-sm-inline">Precio Normal</span>
+         </button>
+        <button className="btn btn-outline-primary btn-sm btn-md-lg">Porcentaje</button>
       </div>
 
       <div className="mb-2">

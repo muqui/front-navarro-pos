@@ -16,14 +16,14 @@ export const SellsTable = () => {
       <table className="table table-bordered">
         <thead className="table-dark">
           <tr>
-            <th>Fecha</th>
-            <th>Usuario</th>
-            <th>Codigo</th>
+            <th className="d-none d-md-table-cell">Fecha</th>
+            <th className="d-none d-md-table-cell" >Usuario</th>
+            <th className="d-none d-md-table-cell">Codigo</th>
             <th>Producto</th>
             <th>Cantidad</th>
             <th>Precio</th>
-            <th>compra</th>
-            <th>Beneficio</th>
+            <th className="d-none d-md-table-cell">compra</th>
+            <th className="d-none d-md-table-cell">Beneficio</th>
 
           
           </tr>
@@ -31,14 +31,14 @@ export const SellsTable = () => {
         <tbody>
           {productos.map((producto) => (
             <tr key={producto.codigo}>
-               <td>{date}</td>
-              <td>{users[0].name}</td>
-              <td>{producto.codigo}</td>
+               <td className="d-none d-md-table-cell" >{date}</td>
+              <td className="d-none d-md-table-cell" >{users[0].name}</td>
+              <td className="d-none d-md-table-cell">{producto.codigo}</td>
               <td>{producto.nombre}</td>
               <td>{producto.cantidad}</td>           
               <td>${(producto.precio * producto.cantidad).toFixed(2)}</td>          
-              <td>${(producto.compra * producto.cantidad).toFixed(2)}</td>
-              <td>${((producto.precio * producto.cantidad) - (producto.compra * producto.cantidad)).toFixed(2)}</td>
+              <td className="d-none d-md-table-cell">${(producto.compra * producto.cantidad).toFixed(2)}</td>
+              <td className="d-none d-md-table-cell">${((producto.precio * producto.cantidad) - (producto.compra * producto.cantidad)).toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
