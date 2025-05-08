@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import ProductosTable from '../mocks/ProductosTable';
+import { FindProduct } from './FindProduct';
 
 export const OrderServiceForm = ({ order }) => {
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const handleAddProduct = (product) => {
+    console.log(product)
+    setSelectedProducts((prev) => [...prev, product]);
+  };
+   
   const formik = useFormik({
     initialValues: {
       service: order?.service || '',
@@ -129,25 +138,34 @@ export const OrderServiceForm = ({ order }) => {
   <table class="table table-bordered table-hover">
     <thead class="table-light">
       <tr>
-        <th>#</th>
+        <th>Codigo</th>
         <th>Nombre</th>
-        <th>Categoría</th>
         <th>Precio</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>Refacción A</td>
-        <td>Eléctrica</td>
-        <td>$120.00</td>
-        <td>
-          <button class="btn btn-sm btn-primary">Eliminar</button>
-        </td>
-      </tr>
-     
-    </tbody>
+  {selectedProducts.map((product, index) => (
+    <tr key={product.id || index}>
+      <td>{product.barcode}</td>
+      <td>{product.name}</td>
+      <td>{product.price}</td>
+  
+      <td>
+        <button
+          className="btn btn-sm btn-danger"
+          onClick={() =>
+            setSelectedProducts((prev) =>
+              prev.filter((_, i) => i !== index)
+            )
+          }
+        >
+          Eliminar
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
   </table>
 </div>
 
@@ -166,6 +184,7 @@ export const OrderServiceForm = ({ order }) => {
   </div>
   <div className="offcanvas-body">
     {/* Aquí colocas un input + tabla/lista de refacciones */}
+   <FindProduct onSelectProduct={handleAddProduct} />
   </div>
 </div>
     </div>

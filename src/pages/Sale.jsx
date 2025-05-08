@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import Menu from '../components/Menu';
 import Modal from '../components/Modal';
 import { FindProduct } from '../components/FindProduct';
@@ -9,6 +9,13 @@ import { TicketTable } from '../mocks/TicketTable';
 export const Sale = () => {
   const [showModal, setShowModal] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
+
+   const [selectedProducts, setSelectedProducts] = useState([]);
+  
+    const handleAddProduct = (product) => {
+      console.log(product)
+      setSelectedProducts((prev) => [...prev, product]);
+    };
 
 
   const openModal = (modalName) => {
@@ -138,7 +145,7 @@ export const Sale = () => {
    {/* Modals dinámicos */}
    {activeModal === 'findProduct' && (
         <Modal showModal={true} handleClose={closeModal}>
-          <FindProduct />
+          <FindProduct onSelectProduct={handleAddProduct} onClose={closeModal}  />
         </Modal>
       )}
 
