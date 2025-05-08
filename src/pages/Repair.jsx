@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import Menu from '../components/Menu'
-import { OrderTable } from '../mocks/OrderTable'
-import Modal from '../components/Modal'; 
+
+
+
+import { OrderTable } from '../components/repair/OrderTable';
+import Modal from '../components/Modal';
 import { OrderServiceForm } from '../components/OrderServiceForm';
 export const Repair = () => {
 
@@ -20,7 +23,7 @@ export const Repair = () => {
     <>
     <Menu/>
 
-    <div className="container mt-4">
+    <div className="container-fluid mt-4">
        {/* Línea 2: Botones debajo del input */}
        <div className="row mb-3">
         <div className="col-auto">
