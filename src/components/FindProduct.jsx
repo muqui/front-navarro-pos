@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuthStore } from "../store/auth";
+import { buildUrl, API_URLS } from '../config/apiConfig'; // Importa la configuración
 
 export const FindProduct = ({ onSelectProduct, onClose }) => {
   const { token } = useAuthStore();
@@ -15,7 +16,7 @@ export const FindProduct = ({ onSelectProduct, onClose }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://back-navarro-pos.duckdns.org/products/search`,
+          buildUrl(API_URLS.searchProduct),
           {
             params: { name: busqueda },
             headers: {

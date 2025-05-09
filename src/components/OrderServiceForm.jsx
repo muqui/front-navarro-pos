@@ -1,23 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import ProductosTable from '../mocks/ProductosTable';
+import axios from 'axios';
+import { useAuthStore } from '../store/auth';
+import { buildUrl, API_URLS } from '../config/apiConfig';
 import { FindProduct } from './FindProduct';
 
-export const OrderServiceForm = ({ order }) => {
+export const OrderServiceForm = ({ folio, onSuccess }) => {
+  console.log(`Folio = ${folio}`)
+  const { token } = useAuthStore();
+  const [order, setOrder] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
-
+  
   const handleAddProduct = (product) => {
-    console.log(product)
+   // console.log(product)
     setSelectedProducts((prev) => [...prev, product]);
   };
    
+  const fetchOrder = async () => {
+    try {
+      const { data } = await axios.get(buildUrl(`${API_URLS.repairCellphones}/${folio}`), {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrder(data);
+    } catch (error) {
+      console.error('Error al cargar la orden:', error);
+      alert('No se pudo cargar la orden');
+    }
+  };
+
+  /*useEffect(() => {
+    console.log(order.folio)
+  
+    if (order?.spareParts) {
+      console.log(order.spareParts)
+      setSelectedProducts(order.spareParts.map(p => ({
+        id: p.product_id,
+        barcode: p.barcode,
+        name: p.name,
+        price: p.price,
+       
+      })));
+    }
+  }, [order]);
+*/
+useEffect(() => {
+  if (folio) {
+    fetchOrder();
+  }
+}, [folio]);
+
+useEffect(() => {
+  if (order?.spareParts) {
+    setSelectedProducts(order.spareParts.map(p => ({
+      id: p.product.id,
+      barcode: p.product.barcode,
+      name: p.product.name,
+      price: p.price,
+    })));
+  }
+  console.log(order)
+}, [order]);
+
   const formik = useFormik({
     initialValues: {
       service: order?.service || '',
       client: order?.client || '',
       cellphone: order?.cellphone || '',
-      repairCost: order?.repairCost || '',
+      repairCost: order?.repair_cost || '',
       paid: order?.paid || '',
       left: order?.left || '',
       note: order?.note || '',
@@ -25,13 +75,13 @@ export const OrderServiceForm = ({ order }) => {
       brand: order?.brand || '',
       model: order?.model || '',
       issue: order?.issue || '',
-      receivedCondition: order?.receivedCondition || '',
-      passwordCellPhone: order?.passwordCellPhone || '',
+      receivedCondition: order?.received_condition || '',
+      passwordCellPhone: order?.password_cell_phone || '',
       imei: order?.imei || '',
       date: order?.date ? new Date(order.date).toISOString().slice(0, 16) : '',
       status: order?.status || 'Pendiente',
     },
-    enableReinitialize: true, // 👈 importante para recargar los datos cuando cambia `order`
+    enableReinitialize: true,
     validationSchema: Yup.object({
       service: Yup.string().required('Required'),
       client: Yup.string().required('Required'),
@@ -45,13 +95,42 @@ export const OrderServiceForm = ({ order }) => {
       issue: Yup.string().required('Required'),
       status: Yup.string().required('Required'),
     }),
-    onSubmit: (values) => {
-      if (order) {
-        // Aquí puedes hacer PUT o PATCH para editar
-        console.log('Editando orden existente:', values);
-      } else {
-        // Aquí puedes hacer POST para crear nueva
-        console.log('Creando nueva orden:', values);
+    onSubmit: async (values) => {
+      const payload = {
+        ...values,
+        repair_cost: Number(values.repairCost),
+        paid: Number(values.paid),
+        left: Number(values.left),
+        received_condition: values.receivedCondition,
+        password_cell_phone: values.passwordCellPhone,
+        spareParts: selectedProducts.map(part => ({
+          productId: part.id,
+          price: Number(part.price),
+          purchasePrice: Number(part.purchasePrice)
+        }))
+    
+      };
+
+      try {
+        if (order) {
+          console.log('Payload enviado:', payload);
+          await axios.patch(buildUrl(`${API_URLS.repairCellphonesSpareParts}/${order.folio}`), payload, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          alert('Orden actualizada correctamente');
+         
+        } else {
+          await axios.post(buildUrl(API_URLS.repairCellphones), payload, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          alert('Orden creada correctamente');
+          formik.resetForm();
+          setSelectedProducts([]);
+        }
+        if (onSuccess) onSuccess();
+      } catch (error) {
+        console.error(error);
+        alert('Error al procesar la orden axios');
       }
     },
   });
@@ -60,7 +139,7 @@ export const OrderServiceForm = ({ order }) => {
     ['service', 'Servicio'],
     ['client', 'Cliente'],
     ['cellphone', 'Celular'],
-    ['repairCost', 'Costo Reparacion'],
+    ['repairCost', 'Costo Reparación'],
     ['paid', 'Abono'],
     ['left', 'Resto'],
     ['note', 'Nota'],
@@ -75,16 +154,17 @@ export const OrderServiceForm = ({ order }) => {
 
   return (
     <div className="container my-1">
-      <h4 className="mb-4 text-center">
-        {order ? 'Editar Orden de Servicio' : 'Crear Orden de Servicio'}
-      </h4>
+      <h4 className="mb-4 text-center">{order ? 'Editar Orden de Servicio' : 'Crear Orden de Servicio'}</h4>
+
+ 
+
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           {fields.map(([field, label]) => (
             <div className="col-md-3 mb-3" key={field}>
               <label htmlFor={field} className="form-label">{label}</label>
               <input
-                type={field.includes('Cost') || field === 'paid' || field === 'left' ? 'number' : 'text'}
+                type={(field.includes('Cost') || field === 'paid' || field === 'left') ? 'number' : 'text'}
                 id={field}
                 name={field}
                 value={formik.values[field]}
@@ -98,42 +178,38 @@ export const OrderServiceForm = ({ order }) => {
             </div>
           ))}
 
-<div className="col-md-3 mb-3">
-  <label htmlFor="status" className="form-label">Estado</label>
-  <select
-    id="status"
-    name="status"
-    value={formik.values.status}
-    onChange={formik.handleChange}
-    onBlur={formik.handleBlur}
-    className="form-select"
-  >
-    <option value="Pendiente">Pendiente</option>
-    <option value="En revision">En revisión</option>
-    <option value="En reparacion">En reparación</option>
-    <option value="Reparado">Reparado</option>
-    <option value="Entregado">Entregado</option>
-    <option value="Cancelado">Cancelado</option>
-    <option value="Finalizado">Finalizado</option>
-  </select>
-  {formik.touched.status && formik.errors.status && (
-    <div className="text-danger">{formik.errors.status}</div>
-  )}
-</div>
+          <div className="col-md-3 mb-3">
+            <label htmlFor="status" className="form-label">Estado</label>
+            <select
+              id="status"
+              name="status"
+              value={formik.values.status}
+              onChange={formik.handleChange}
+              className="form-control"
+            >
+              <option value="Pendiente">Pendiente</option>
+              <option value="Reparado">Reparado</option>
+              <option value="Entregado">Entregado</option>
+            </select>
+            {formik.touched.status && formik.errors.status && (
+              <div className="text-danger">{formik.errors.status}</div>
+            )}
+          </div>
+          <div className="row my-3">
 
-<div class="row my-3">
-  <div class="col-3">
-    <button
-      class="btn btn-secondary w-100"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#buscarRefaccion"
-    >
-      Buscar refacción
-    </button>
-  </div>
-</div>
-
-<div class="container mt-4">
+             {/* Botón y tabla solo se muestran si hay un 'folio' */}
+          {order && (
+            <> <div class="col-3">
+            <button
+               type="button"
+              class="btn btn-secondary w-100"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#buscarRefaccion"
+            >
+              Buscar refacción
+            </button>
+          </div>
+          <div class="container mt-4">
   <h5>Lista de Refacciones</h5>
   <table class="table table-bordered table-hover">
     <thead class="table-light">
@@ -167,17 +243,21 @@ export const OrderServiceForm = ({ order }) => {
   ))}
 </tbody>
   </table>
+</div></>
+          )}  
+ 
 </div>
 
+
         </div>
-
-        <button type="submit" className="btn btn-primary mt-3">
-          {order ? 'Actualizar' : 'Crear'}
-        </button>
+        <div className="text-center">
+          <button type="submit" className="btn btn-primary">
+            {order ? 'Actualizar' : 'Registrar'}
+          </button>
+        </div>
       </form>
-    
 
-<div className="offcanvas offcanvas-end" tabIndex="-1" id="buscarRefaccion">
+      <div className="offcanvas offcanvas-end" tabIndex="-1" id="buscarRefaccion">
   <div className="offcanvas-header">
     <h5 className="offcanvas-title">Buscar refacción</h5>
     <button className="btn-close" data-bs-dismiss="offcanvas"></button>
@@ -187,6 +267,7 @@ export const OrderServiceForm = ({ order }) => {
    <FindProduct onSelectProduct={handleAddProduct} />
   </div>
 </div>
+
     </div>
   );
 };

@@ -3,43 +3,40 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../../components/Modal';
 import { OrderServiceForm } from '../../components/OrderServiceForm';
 import axios from 'axios';
+import { buildUrl, API_URLS } from '../../config/apiConfig'; // Importa la configuración
+//import { buildUrl, API_URLS } from '../config/apiConfig'; // Importa la configuración
 import { useAuthStore } from '../../store/auth'; // Asegúrate de tener esto configurado
 
-export const OrderTable = () => {
+export const OrderTable = ({ reload, triggerReload }) => {
      const [orders, setOrders] = useState([]);
        const [showModal, setShowModal] = useState(false);
        const [selectedOrder, setSelectedOrder] = useState(null);
        const token = useAuthStore((state) => state.token);
 
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await axios.get('https://back-navarro-pos.duckdns.org/repair-cellphones', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setOrders(response.data);
-      } catch (error) {
-        console.error('Error al obtener las órdenes:', error);
-      }
-    };
-
-    if (token) {
-      fetchOrders();
-    }
-  }, [token]);
-     
-       const openModal = (order) => {
+       useEffect(() => {
+        const fetchOrders = async () => {
+          try {
+            const response = await axios.get(buildUrl(API_URLS.repairCellphones), {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            setOrders(response.data);
+          } catch (error) {
+            console.error('Error al obtener las órdenes:', error);
+          }
+        };
+        if (token) fetchOrders();
+      }, [token, reload]);
+    
+      const openModal = (order) => {
         setSelectedOrder(order);
-      
-         setShowModal(true);
-       };
-     
-       const closeModal = () => {
-         setShowModal(false);
-       };
+        setShowModal(true);
+      };
+    
+      const closeModal = () => {
+        setSelectedOrder(null);
+        setShowModal(false);
+      };
   return (
     <div className="container mt-4">
      
@@ -79,7 +76,15 @@ export const OrderTable = () => {
       </tbody>
     </table>
     <Modal showModal={showModal} handleClose={closeModal}>
- <OrderServiceForm order={selectedOrder} /> 
+  {selectedOrder && (
+    <OrderServiceForm
+      folio={selectedOrder.folio}
+      onSuccess={() => {
+        triggerReload();
+        closeModal();
+      }}
+    />
+  )}
 </Modal>
      
   </div>

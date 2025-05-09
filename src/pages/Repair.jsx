@@ -9,7 +9,10 @@ import { OrderServiceForm } from '../components/OrderServiceForm';
 export const Repair = () => {
 
   const [showModal, setShowModal] = useState(false);
-
+  const [reloadOrders, setReloadOrders] = useState(false);
+  const triggerReload = () => {
+    setReloadOrders(prev => !prev); // cambia el valor para forzar recarga
+  };
   const openModal = () => {
     setShowModal(true);
   };
@@ -31,11 +34,14 @@ export const Repair = () => {
          
         </div>
       </div>
-   <OrderTable/> 
+      <OrderTable reload={reloadOrders} triggerReload={triggerReload} />
     </div>
 
     <Modal showModal={showModal} handleClose={closeModal}>
- <OrderServiceForm /> 
+    <OrderServiceForm onSuccess={() => {
+          triggerReload();
+          closeModal();
+        }} />
 </Modal>
      
     </>
