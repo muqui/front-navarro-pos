@@ -7,17 +7,23 @@ import { buildUrl, API_URLS } from '../../config/apiConfig'; // Importa la confi
 //import { buildUrl, API_URLS } from '../config/apiConfig'; // Importa la configuración
 import { useAuthStore } from '../../store/auth'; // Asegúrate de tener esto configurado
 
-export const OrderTable = ({ reload, triggerReload }) => {
+export const OrderTable = ({ reload, triggerReload, startDate, endDate, status }) => {
      const [orders, setOrders] = useState([]);
        const [showModal, setShowModal] = useState(false);
        const [selectedOrder, setSelectedOrder] = useState(null);
+     
        const token = useAuthStore((state) => state.token);
 
 
        useEffect(() => {
         const fetchOrders = async () => {
           try {
-            const response = await axios.get(buildUrl(API_URLS.repairCellphones), {
+            const params = new URLSearchParams();
+
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
+            if (status) params.append('status', status);
+            const response = await axios.get(buildUrl(`${API_URLS.repairCellphones}?${params.toString()}`), {
               headers: { Authorization: `Bearer ${token}` },
             });
             setOrders(response.data);
@@ -26,7 +32,7 @@ export const OrderTable = ({ reload, triggerReload }) => {
           }
         };
         if (token) fetchOrders();
-      }, [token, reload]);
+      }, [token, reload, startDate, endDate, status]);
     
       const openModal = (order) => {
         setSelectedOrder(order);
@@ -38,7 +44,8 @@ export const OrderTable = ({ reload, triggerReload }) => {
         setShowModal(false);
       };
   return (
-    <div className="container mt-4">
+    <div className="container-fluid mt-4">
+      
      
     <table className="table table-bordered">
       <thead className="table-dark">

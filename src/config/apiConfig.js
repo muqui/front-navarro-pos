@@ -1,7 +1,7 @@
 // src/config/apiConfig.ts
-export const BASE_URL = 'https://back-navarro-pos.duckdns.org';  // Base Url
+//export const BASE_URL = 'https://back-navarro-pos.duckdns.org';  // Base Url
 //export const BASE_URL ='http://192.168.1.31:3007'
-//export const BASE_URL ='http://localhost:3007'
+export const BASE_URL ='http://localhost:3007'
 export const API_URLS = {
   auth: '/auth/signin',          // Ruta de autenticación
   products: '/products',         // Ruta de productos

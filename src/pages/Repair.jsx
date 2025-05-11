@@ -10,6 +10,9 @@ export const Repair = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [reloadOrders, setReloadOrders] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [status, setStatus] = useState('');
   const triggerReload = () => {
     setReloadOrders(prev => !prev); // cambia el valor para forzar recarga
   };
@@ -24,26 +27,74 @@ export const Repair = () => {
 
   return (
     <>
-    <Menu/>
+      <Menu />
 
-    <div className="container-fluid mt-4">
-       {/* Línea 2: Botones debajo del input */}
-       <div className="row mb-3">
-        <div className="col-auto">
-          <button className="btn btn-outline-secondary me-2" onClick={openModal}>Registrar orden</button>
+      <div className="container mt-4">
+        {/* Línea 2: Botones debajo del input */}
+        <div className="row align-items-end mb-3 g-2">
+          <div className="col-auto">
+            <button className="btn btn-outline-secondary" onClick={openModal}>
+              Registrar orden
+            </button>
+          </div>
+
+          <div className="col-auto">
+            <label className="form-label">Desde:</label>
+            <input
+              type="date"
+              className="form-control"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+
+          <div className="col-auto">
+            <label className="form-label">Hasta:</label>
+            <input
+              type="date"
+              className="form-control"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+
+          <div className="col-auto">
+            <label className="form-label">Estado:</label>
+            <select
+              className="form-control"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="En revision">En revisión</option>
+              <option value="En reparacion">En reparación</option>
+              <option value="Reparado">Reparado</option>
+              <option value="Entregado">Entregado</option>
+              <option value="Cancelado">Cancelado</option>
+              <option value="Finalizada">Finalizada</option>
+            </select>
+          </div>
+
          
         </div>
-      </div>
-      <OrderTable reload={reloadOrders} triggerReload={triggerReload} />
-    </div>
 
-    <Modal showModal={showModal} handleClose={closeModal}>
-    <OrderServiceForm onSuccess={() => {
+        <OrderTable
+          reload={reloadOrders}
+          triggerReload={triggerReload}
+          startDate={startDate}
+          endDate={endDate}
+          status={status}
+        />
+      </div>
+
+      <Modal showModal={showModal} handleClose={closeModal}>
+        <OrderServiceForm onSuccess={() => {
           triggerReload();
           closeModal();
         }} />
-</Modal>
-     
+      </Modal>
+
     </>
   )
 }
