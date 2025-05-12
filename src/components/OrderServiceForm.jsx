@@ -29,21 +29,7 @@ export const OrderServiceForm = ({ folio, onSuccess }) => {
     }
   };
 
-  /*useEffect(() => {
-    console.log(order.folio)
-  
-    if (order?.spareParts) {
-      console.log(order.spareParts)
-      setSelectedProducts(order.spareParts.map(p => ({
-        id: p.product_id,
-        barcode: p.barcode,
-        name: p.name,
-        price: p.price,
-       
-      })));
-    }
-  }, [order]);
-*/
+
 useEffect(() => {
   if (folio) {
     fetchOrder();
@@ -57,6 +43,7 @@ useEffect(() => {
       barcode: p.product.barcode,
       name: p.product.name,
       price: p.price,
+      purchasePrice: p.purchasePrice || 0 // Asegurar que no sea undefined
     })));
   }
   console.log(order)
@@ -78,6 +65,7 @@ useEffect(() => {
       receivedCondition: order?.received_condition || '',
       passwordCellPhone: order?.password_cell_phone || '',
       imei: order?.imei || '',
+      replacementCost: order?.replacementCost || 0,
       date: order?.date ? new Date(order.date).toISOString().slice(0, 16) : '',
       status: order?.status || 'Pendiente',
     },
@@ -94,6 +82,8 @@ useEffect(() => {
       model: Yup.string().required('Required'),
       issue: Yup.string().required('Required'),
       status: Yup.string().required('Required'),
+    
+      
     }),
     onSubmit: async (values) => {
       const payload = {
@@ -101,6 +91,7 @@ useEffect(() => {
         repair_cost: Number(values.repairCost),
         paid: Number(values.paid),
         left: Number(values.left),
+        replacementCost: Number(values.replacementCost),
         received_condition: values.receivedCondition,
         password_cell_phone: values.passwordCellPhone,
         spareParts: selectedProducts.map(part => ({
@@ -195,6 +186,23 @@ useEffect(() => {
               <div className="text-danger">{formik.errors.status}</div>
             )}
           </div>
+          <div className="col-md-3 mb-3">
+  <label htmlFor="replacementCost" className="form-label">Costo de refacciones</label>
+  <input
+    type="number"
+    id="replacementCost"
+    name="replacementCost"
+    value={formik.values.replacementCost }
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    className="form-control"
+    disabled={selectedProducts.length > 0}
+    
+  />
+  {formik.touched.replacementCost && formik.errors.replacementCost && (
+    <div className="text-danger">{formik.errors.replacementCost}</div>
+  )}
+</div>
           <div className="row my-3">
 
              {/* Botón y tabla solo se muestran si hay un 'folio' */}

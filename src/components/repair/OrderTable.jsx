@@ -64,23 +64,32 @@ export const OrderTable = ({ reload, triggerReload, startDate, endDate, status }
         </tr>
       </thead>
       <tbody>
-      {orders.map((order) => (
-            <tr key={order.id}>
-               <td>{new Date(order.date).toLocaleDateString('es-MX')}</td>
-               <td>{order.client}</td>
-               <td className="d-none d-md-table-cell">{order.folio}</td>
-               <td className="d-none d-md-table-cell">{order.brand}</td>
-               <td className="d-none d-md-table-cell">{order.model}</td>
-               <td className="d-none d-md-table-cell">{order.service}</td>
-               <td className="d-none d-md-table-cell">{order.repair_cost}</td>
-               <td className="d-none d-md-table-cell">{order.replacementCost}</td>
-               <td>{order.profit}</td>
-               <td className="d-none d-md-table-cell">{order.status}</td>
-               <td><button className="btn btn-sm btn-success "  onClick={() => openModal(order)}>Ver</button></td> 
-             
-            </tr>
-          ))}
-      </tbody>
+  {orders.length === 0 ? (
+    <tr>
+      <td colSpan="11" className="text-center">No hay órdenes para mostrar.</td>
+    </tr>
+  ) : (
+    orders.map((order) => (
+      <tr key={order.id}>
+        <td>{new Date(order.date).toLocaleDateString('es-MX')}</td>
+        <td>{order.client}</td>
+        <td className="d-none d-md-table-cell">{order.folio}</td>
+        <td className="d-none d-md-table-cell">{order.brand}</td>
+        <td className="d-none d-md-table-cell">{order.model}</td>
+        <td className="d-none d-md-table-cell">{order.service}</td>
+        <td className="d-none d-md-table-cell">{order.repair_cost}</td>
+        <td className="d-none d-md-table-cell">{order.replacementCost}</td>
+        <td>{order.profit}</td>
+        <td className="d-none d-md-table-cell">{order.status}</td>
+        <td>
+          <button className="btn btn-sm btn-success" onClick={() => openModal(order)}>
+            Ver
+          </button>
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
     </table>
     <Modal showModal={showModal} handleClose={closeModal}>
   {selectedOrder && (

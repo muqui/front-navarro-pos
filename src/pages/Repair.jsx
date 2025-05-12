@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import Menu from '../components/Menu'
-
-
-
 import { OrderTable } from '../components/repair/OrderTable';
 import Modal from '../components/Modal';
 import { OrderServiceForm } from '../components/OrderServiceForm';
+// Función para obtener la fecha formateada como yyyy-mm-dd
+
 export const Repair = () => {
+  const formatDate = (date) => date.toISOString().split('T')[0];
+  // Obtener la fecha actual y la de hace 7 días
+  const today = new Date();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(today.getDate() - 7);
 
   const [showModal, setShowModal] = useState(false);
   const [reloadOrders, setReloadOrders] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(formatDate(sevenDaysAgo));
+  const [endDate, setEndDate] = useState(formatDate(today));
   const [status, setStatus] = useState('');
   const triggerReload = () => {
     setReloadOrders(prev => !prev); // cambia el valor para forzar recarga
