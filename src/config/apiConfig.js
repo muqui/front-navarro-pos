@@ -10,6 +10,7 @@ export const API_URLS = {
   repairCellphones : '/repair-cellphones', // ruta para ordenes de servicios
   repairCellphonesSpareParts: '/repair-cellphones/update-with-spare-parts',
   entriesProducts: '/products/entries', //Entrada de productis al inventario
+  orderSolds: '/orders/solds' //Lista de las ventas
 
 };
 
