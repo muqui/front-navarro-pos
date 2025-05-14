@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuthStore } from '../../store/auth';
 import { buildUrl, API_URLS } from '../../config/apiConfig'; // Importa la configuración
 import { SelectUser } from '../SelectUser';
+import { SelectDepartment } from '../SelectDepartment';
 export const SellsTable = () => {
   const formatDate = (date) => date.toISOString().split('T')[0];
   const today = new Date();
@@ -48,7 +49,7 @@ export const SellsTable = () => {
           },
         }); // Axios reemplaza fetch aquí
         const data = response.data;
-        console.log(data)
+       
         // Asignamos orderDetails directamente a productos
         setProductos(data.orderDetails);
         setTotales({
@@ -66,7 +67,7 @@ export const SellsTable = () => {
 
   return (
     <div className="container mt-4">
-      <h4>Filtros</h4>
+   
       <div className="row mb-3">
         <div className="col-md-3">
           <label>Fecha de inicio:</label>
@@ -83,11 +84,7 @@ export const SellsTable = () => {
         </div>
         <div className="col-md-3">
           <label>Departamento:</label>
-          <select className="form-control" value={selectedDepartment} onChange={e => setSelectedDepartment(e.target.value)}>
-            <option value="">Todos los departamentos</option>
-            <option value="papeleria">papeleria</option>
-
-          </select>
+        <SelectDepartment onDeparmentChange ={setSelectedDepartment}/>
         </div>
       </div>
 

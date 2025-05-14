@@ -1,10 +1,11 @@
 import React from 'react'
 import Menu from '../components/Menu'
 
-import { IncomeTable } from '../mocks/IncomeTable'
+//import { IncomeTable } from '../mocks/IncomeTable'
 import { ExpensesTable } from '../mocks/ExpensesTable'
 import { CompleteTable } from '../mocks/CompleteTable'
 import { SellsTable } from '../components/report/SellsTable'
+import { IncomeTable } from '../components/report/IncomeTable'
 export const Report = () => {
   return (
     <>
