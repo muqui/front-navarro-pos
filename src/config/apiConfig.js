@@ -14,7 +14,10 @@ export const API_URLS = {
   users: '/users',
   categories: '/categories',
   incomeNames: '/incomes/name',
-  incomes: '/incomes'
+  incomes: '/incomes',
+  expensesNames : '/expenses/name',
+  expenses : '/expenses',
+  reports : '/reports'
 };
 
 // Función para construir la URL completa
