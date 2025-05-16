@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Menu from '../components/Menu'
-import { UsersTable } from '../mocks/UsersTable'
 import Modal from '../components/Modal'; 
 import {UserForm} from '../components/UserForm';
+import { UsersTable } from '../components/users/UsersTable';
+
 
 export const Config = () => {
 

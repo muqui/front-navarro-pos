@@ -17,7 +17,8 @@ export const API_URLS = {
   incomes: '/incomes',
   expensesNames : '/expenses/name',
   expenses : '/expenses',
-  reports : '/reports'
+  reports : '/reports',
+  register: '/auth/signup',
 };
 
 // Función para construir la URL completa

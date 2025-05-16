@@ -1,9 +1,14 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+//import { buildUrl, API_URLS } from '../../config/apiConfig';
+import { buildUrl, API_URLS } from '../config/apiConfig';
+import axios from 'axios';
+//import { useAuthStore } from '../store/auth'; 
+import { useAuthStore } from '../store/auth'; 
 
 export const UserForm = () => {
-    
+  const token = useAuthStore((state) => state.token);
     const formik = useFormik({
         initialValues: {
           email: '',
@@ -13,7 +18,8 @@ export const UserForm = () => {
           phone: '',
           city: '',
           country: '',
-          isAdmin: '',
+          isAdmin: 'user',
+          isActive: true, // Valor por defecto
         },
         validationSchema: Yup.object({
           email: Yup.string().email('Invalid email').required('Required'),
@@ -23,10 +29,27 @@ export const UserForm = () => {
           phone: Yup.string().required('Required'),
           city: Yup.string().required('Required'),
           country: Yup.string().required('Required'),
-          isAdmin: Yup.string().oneOf(['User', 'Admin'], 'Invalid role').required('Required'),
+          //isAdmin: Yup.string().oneOf(['User', 'Admin'], 'Invalid role').required('Required'),
         }),
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
           console.log('Submitted values:', values);
+          try {
+            const response = await axios.post(buildUrl(`${API_URLS.register}`), values, {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
+            console.log('Signup successful:', response.data);
+            alert('User registered successfully!');
+          } catch (error) {
+            if (axios.isAxiosError(error)) {
+              console.error('Axios error:', error.response?.data || error.message);
+              alert('Signup failed: ' + (error.response?.data?.message || error.message));
+            } else {
+              console.error('Unexpected error:', error);
+              alert('Unexpected error occurred');
+            }
+          }
         },
       });
     
@@ -42,14 +65,30 @@ export const UserForm = () => {
       ];
   return (
     <div className="container my-5">
-      <h2 className="mb-4">User Registration Form</h2>
-      <form onSubmit={formik.handleSubmit}>
-        <div className="row">
-          {fields.map(([field, label, type]) => (
-            <div className="col-md-4 mb-3" key={field}>
-              <label htmlFor={field} className="form-label">
-                {label}
-              </label>
+    <h2 className="mb-4">User Registration Form</h2>
+    <form onSubmit={formik.handleSubmit}>
+      <div className="row">
+        {fields.map(([field, label, type]) => (
+          <div className="col-md-4 mb-3" key={field}>
+            <label htmlFor={field} className="form-label">
+              {label}
+            </label>
+
+            {field === 'isAdmin' ? (
+              <select
+                id="isAdmin"
+                name="isAdmin"
+                value={formik.values.isAdmin}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="form-select"
+              >
+              
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="technician">Technician</option>
+              </select>
+            ) : (
               <input
                 type={type}
                 id={field}
@@ -59,16 +98,18 @@ export const UserForm = () => {
                 onBlur={formik.handleBlur}
                 className="form-control"
               />
-              {formik.touched[field] && formik.errors[field] && (
-                <div className="text-danger">{formik.errors[field]}</div>
-              )}
-            </div>
-          ))}
-        </div>
-        <button type="submit" className="btn btn-primary mt-3">
-          Submit
-        </button>
-      </form>
-    </div>
+            )}
+
+            {formik.touched[field] && formik.errors[field] && (
+              <div className="text-danger">{formik.errors[field]}</div>
+            )}
+          </div>
+        ))}
+      </div>
+      <button type="submit" className="btn btn-primary mt-3">
+        Submit
+      </button>
+    </form>
+  </div>
   )
 }
