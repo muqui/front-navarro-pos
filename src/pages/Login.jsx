@@ -58,11 +58,11 @@ function Login() {
                     <label htmlFor="email" className="form-label">Email</label>
                     <input
                       type="email"
-                      id="email"
-                      name="email"
+                      id="identifier"
+                      name="identifier"
                       value={values.identifier}
-                      onChange={handleChange('email')}
-                      onBlur={handleBlur('email')}
+                      onChange={handleChange('identifier')}
+                      onBlur={handleBlur('identifier')}
                       className={`form-control ${touched.identifier && errors.identifier ? 'is-invalid' : ''}`}
                     />
                     {touched.email && errors.email && (
