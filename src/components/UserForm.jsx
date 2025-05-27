@@ -7,20 +7,21 @@ import axios from 'axios';
 //import { useAuthStore } from '../store/auth'; 
 import { useAuthStore } from '../store/auth'; 
 
-export const UserForm = () => {
+export const UserForm = ({ user }) => {
   const token = useAuthStore((state) => state.token);
     const formik = useFormik({
         initialValues: {
-          email: '',
-          name: '',
-          password: '',
-          address: '',
-          phone: '',
-          city: '',
-          country: '',
-          isAdmin: 'user',
-          isActive: true, // Valor por defecto
+          email:  user?.email || '',
+          name: user?.name || '',
+      password: '', // Nunca rellenes contraseñas
+      address: user?.address || '',
+      phone: user?.phone || '',
+      city: user?.city || '',
+      country: user?.country || '',
+      isAdmin: user?.isAdmin || 'user',
+      isActive: user?.isActive ?? true,
         },
+        enableReinitialize: true, // IMPORTANTE para recargar valores cuando el prop `user` cambie
         validationSchema: Yup.object({
           email: Yup.string().email('Invalid email').required('Required'),
           name: Yup.string().required('Required'),
@@ -32,19 +33,34 @@ export const UserForm = () => {
           //isAdmin: Yup.string().oneOf(['User', 'Admin'], 'Invalid role').required('Required'),
         }),
         onSubmit: async (values) => {
-          console.log('Submitted values:', values);
           try {
-            const response = await axios.post(buildUrl(`${API_URLS.register}`), values, {
-              headers: {
+            if (user) {
+              // Actualizar usuario
+              const response = await axios.patch(
+                buildUrl(`${API_URLS.users}/${user.id}`),
+                values,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              alert('User updated successfully!');
+              console.log('Update response:', response.data);
+            } else {
+              // Crear nuevo usuario
+              const response = await axios.post(buildUrl(API_URLS.register), values, {
+                headers: {
                   Authorization: `Bearer ${token}`,
-              },
-          });
-            console.log('Signup successful:', response.data);
-            alert('User registered successfully!');
+                },
+              });
+              alert('User registered successfully!');
+              console.log('Signup response:', response.data);
+            }
           } catch (error) {
             if (axios.isAxiosError(error)) {
               console.error('Axios error:', error.response?.data || error.message);
-              alert('Signup failed: ' + (error.response?.data?.message || error.message));
+              alert('Operation failed: ' + (error.response?.data?.message || error.message));
             } else {
               console.error('Unexpected error:', error);
               alert('Unexpected error occurred');
@@ -65,51 +81,50 @@ export const UserForm = () => {
       ];
   return (
     <div className="container my-5">
-    <h2 className="mb-4">User Registration Form</h2>
-    <form onSubmit={formik.handleSubmit}>
-      <div className="row">
-        {fields.map(([field, label, type]) => (
-          <div className="col-md-4 mb-3" key={field}>
-            <label htmlFor={field} className="form-label">
-              {label}
-            </label>
+      <h2 className="mb-4">{user ? 'Update User' : 'Register User'}</h2>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="row">
+          {fields.map(([field, label, type]) => (
+            <div className="col-md-4 mb-3" key={field}>
+              <label htmlFor={field} className="form-label">
+                {label}
+              </label>
 
-            {field === 'isAdmin' ? (
-              <select
-                id="isAdmin"
-                name="isAdmin"
-                value={formik.values.isAdmin}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className="form-select"
-              >
-              
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-                <option value="technician">Technician</option>
-              </select>
-            ) : (
-              <input
-                type={type}
-                id={field}
-                name={field}
-                value={formik.values[field]}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className="form-control"
-              />
-            )}
+              {field === 'isAdmin' ? (
+                <select
+                  id="isAdmin"
+                  name="isAdmin"
+                  value={formik.values.isAdmin}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="form-select"
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                  <option value="technician">Technician</option>
+                </select>
+              ) : (
+                <input
+                  type={type}
+                  id={field}
+                  name={field}
+                  value={formik.values[field]}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="form-control"
+                />
+              )}
 
-            {formik.touched[field] && formik.errors[field] && (
-              <div className="text-danger">{formik.errors[field]}</div>
-            )}
-          </div>
-        ))}
-      </div>
-      <button type="submit" className="btn btn-primary mt-3">
-        Submit
-      </button>
-    </form>
-  </div>
+              {formik.touched[field] && formik.errors[field] && (
+                <div className="text-danger">{formik.errors[field]}</div>
+              )}
+            </div>
+          ))}
+        </div>
+        <button type="submit" className="btn btn-primary mt-3">
+          {user ? 'Update' : 'Register'}
+        </button>
+      </form>
+    </div>
   )
 }

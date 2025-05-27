@@ -7,11 +7,14 @@ import {UserForm} from '../UserForm';
 import { useAuthStore } from '../../store/auth'; 
 export const UsersTable = () => {
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const token = useAuthStore((state) => state.token);
    const [showModal, setShowModal] = useState(false);
   
-    const openModal = () => {
+    const openModal = (user) => {
       setShowModal(true);
+      setSelectedUser(user);
+     // console.log(user)
     };
   
     const closeModal = () => {
@@ -57,13 +60,13 @@ export const UsersTable = () => {
               <td className='d-none d-md-table-cell'>{user.isAdmin}</td>
                 
                    
-              <td><button className="btn btn-sm btn-success " onClick={openModal} >Ver</button></td>
+              <td><button className="btn btn-sm btn-success " onClick={() => openModal(user)} >Ver</button></td>
             </tr>
           ))}    
         </tbody>
       </table>
       <Modal showModal={showModal} handleClose={closeModal}>
-          <UserForm />
+          <UserForm user={selectedUser} />
         </Modal>
     </div>
   )
