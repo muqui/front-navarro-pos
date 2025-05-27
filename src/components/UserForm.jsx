@@ -81,7 +81,7 @@ export const UserForm = ({ user }) => {
       ];
   return (
     <div className="container my-5">
-      <h2 className="mb-4">{user ? 'Update User' : 'Register User'}</h2>
+      <h2 className="mb-4  text-center">{user ? 'Actualizar usuario' : 'Registrar usuario'}</h2>
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           {fields.map(([field, label, type]) => (
