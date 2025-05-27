@@ -19,6 +19,7 @@ export const API_URLS = {
   expenses : '/expenses',
   reports : '/reports',
   register: '/auth/signup',
+  entriesByProductName: '/products/entries-by-name',
 };
 
 // Función para construir la URL completa

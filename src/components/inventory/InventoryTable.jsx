@@ -7,7 +7,7 @@ import { InventoryForm } from '../InventoryForm';
 import { buildUrl, API_URLS } from '../../config/apiConfig'; // Importa la configuración
 
 
-const InvetoryTable = () => {
+const InvetoryTable = ({ productName }) => {
   const [date, setDate] = useState('');
   const [productos, setProductos] = useState([]);
   const [selectProduct, setSelectProduct] = useState(null);
@@ -32,27 +32,31 @@ const InvetoryTable = () => {
 
   const fetchProductos = async () => {
     try {
-      //const url = `https://back-navarro-pos.duckdns.org/products/entries?startDate=${startDate}&endDate=${endDate}&departmentName=${encodeURIComponent(departmentName)}`;
-      const url = `${buildUrl(API_URLS.entriesProducts)}?startDate=${startDate}&endDate=${endDate}&departmentName=${encodeURIComponent(departmentName)}`;
-
+      let url;
+  
+      if (productName.trim() !== '') {
+        url = `${buildUrl(API_URLS.entriesByProductName)}?name=${encodeURIComponent(productName)}`;
+      } else {
+        url = `${buildUrl(API_URLS.entriesProducts)}?startDate=${startDate}&endDate=${endDate}&departmentName=${encodeURIComponent(departmentName)}`;
+      }
+  
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       setProductos(response.data);
     } catch (error) {
       console.error('Error al obtener los productos:', error);
     }
   };
-
   // Cargar productos cuando hay token
   useEffect(() => {
     if (token) {
       fetchProductos();
     }
-  }, [token]);
+  }, [token, productName]);
 
   useEffect(() => {
     const ahora = new Date();
