@@ -20,15 +20,9 @@ const InvetoryTable = ({ productName }) => {
 
   const token = useAuthStore((state) => state.token);
 
-  const openModal = (producto) => {
-    console.log("Producto seleccionado:", producto);
-    setSelectProduct(producto);
-    setShowModal(true);
-  };
 
-  const closeModal = () => {
-    setShowModal(false);
-  };
+
+  
 
   const fetchProductos = async () => {
     try {
@@ -110,25 +104,25 @@ const InvetoryTable = ({ productName }) => {
             <th>Cantidad</th>
             <th className='d-none d-md-table-cell'>Precio compra</th>
             <th>Total Compra</th>
+            <th>Proveedor</th>
           </tr>
         </thead>
         <tbody>
           {productos.map((producto) => (
-            <tr key={producto.id} onClick={() => openModal(producto)}>
+            <tr key={producto.id} >
               <td className='d-none d-md-table-cell'>{new Date(producto.date).toLocaleDateString('es-MX')}</td>
               <td className='d-none d-md-table-cell'>{producto.product?.barcode || '—'}</td>
               <td>{producto.product?.name || 'Sin nombre'}</td>
               <td>{parseFloat(producto.amount).toFixed(2)}</td>
               <td className='d-none d-md-table-cell'>${parseFloat(producto.purchasePrice).toFixed(2)}</td>
               <td>${parseFloat(producto.purchaseTotalPrice).toFixed(2)}</td>
+              <td>{producto.supplier}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <Modal showModal={showModal} handleClose={closeModal}>
-        <InventoryForm product={selectProduct} />
-      </Modal>
+     
     </div>
   );
 };
