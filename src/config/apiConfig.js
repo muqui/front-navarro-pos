@@ -20,6 +20,7 @@ export const API_URLS = {
   reports : '/reports',
   register: '/auth/signup',
   entriesByProductName: '/products/entries-by-name',
+  addInventory: '/products/addInventory', // PATCH con barcode dinámico
 };
 
 // Función para construir la URL completa
