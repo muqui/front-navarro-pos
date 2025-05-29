@@ -1,24 +1,59 @@
-// src/components/TableProducts.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import axios from 'axios';
+import debounce from 'lodash.debounce';
 import { useAuthStore } from '../../store/auth';
 import { API_URLS, buildUrl } from '../../config/apiConfig';
+import Modal from '../Modal';
+import ProductForm from '../ProductForm';
 
-export const TableProducts = () => {
+export const TableProducts = ({ searchTerm, page, setPage }) => {
+
+  const [activeModal, setActiveModal] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);
-  const [limit] = useState(10); // puedes cambiar este valor si quieres más productos por página
+  const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
   const token = useAuthStore((state) => state.token);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem('token');
+  const openModal = (modalName) => {
+    setActiveModal(modalName);
+  };
 
+  const handleViewProduct = (product) => {
+    console.log("Producto seleccionado:", product);
+    openModal('product')
+  };
+
+  const closeModal = () => {
+    setActiveModal(null);
+    setSelectedProduct(null);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+  }, []); // esto es opcional, para mostrar el spinner inicial
+
+  const fetchProducts = async (term) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+
+      if (term && term.trim() !== '') {
+        const response = await axios.get(
+          buildUrl(`${API_URLS.searchProduct}?name=${encodeURIComponent(term)}`),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        //console.log(response.data);
+        setProducts(response.data);
+        setTotalPages(1);
+      } else {
         const response = await axios.get(
           buildUrl(API_URLS.products) + `?page=${page}&limit=${limit}`,
           {
@@ -27,18 +62,32 @@ export const TableProducts = () => {
             },
           }
         );
-
         setProducts(response.data.data);
         setTotalPages(response.data.totalPages);
-      } catch (error) {
-        console.error('Error al obtener los productos:', error);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('Error al obtener los productos:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchProducts();
-  }, [page, limit]);
+  // ✅ debounce + useCallback
+  const debouncedFetchProducts = useCallback(
+    debounce((term) => {
+      fetchProducts(term);
+    }, 500),
+    [page, limit]
+  );
+
+  // ✅ useEffect que llama a la función debounced
+  useEffect(() => {
+    debouncedFetchProducts(searchTerm);
+
+    return () => {
+      debouncedFetchProducts.cancel();
+    };
+  }, [searchTerm, page, limit]);
 
   const handleNextPage = () => {
     if (page < totalPages) setPage(page + 1);
@@ -82,10 +131,10 @@ export const TableProducts = () => {
                   <td className="d-none d-md-table-cell">{product.output}</td>
                   <td className="d-none d-md-table-cell">{product.stock}</td>
                   <td className="d-none d-md-table-cell">
-                    ${parseFloat(product.total).toFixed(2)}
+                    ${parseFloat(product.stock * product.purchasePrice).toFixed(2)}
                   </td>
                   <td>
-                    <button className="btn btn-sm btn-primary me-2">Ver</button>
+                    <button className="btn btn-sm btn-primary me-2" onClick={() => handleViewProduct(product)}>Ver</button>
                   </td>
                   <td>
                     <button className="btn btn-sm btn-secondary me-2">Agregar</button>
@@ -95,28 +144,34 @@ export const TableProducts = () => {
             </tbody>
           </table>
 
-          {/* Paginación */}
-          <div className="mt-3 d-flex justify-content-between align-items-center">
-            <button
-              onClick={handlePrevPage}
-              className="btn btn-outline-secondary"
-              disabled={page === 1}
-            >
-              Anterior
-            </button>
-            <span>
-              Página {page} de {totalPages}
-            </span>
-            <button
-              onClick={handleNextPage}
-              className="btn btn-outline-secondary"
-              disabled={page === totalPages}
-            >
-              Siguiente
-            </button>
-          </div>
+          {!searchTerm && (
+            <div className="mt-3 d-flex justify-content-between align-items-center">
+              <button
+                onClick={handlePrevPage}
+                className="btn btn-outline-secondary"
+                disabled={page === 1}
+              >
+                Anterior
+              </button>
+              <span>Página {page} de {totalPages}</span>
+              <button
+                onClick={handleNextPage}
+                className="btn btn-outline-secondary"
+                disabled={page === totalPages}
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
         </>
       )}
+
+      {activeModal === 'product' && (
+        <Modal showModal={true} handleClose={closeModal}>
+          <ProductForm />
+        </Modal>
+      )}
+
     </>
   );
 };
