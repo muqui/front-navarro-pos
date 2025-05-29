@@ -12,10 +12,11 @@ const InvetoryTable = ({ productName }) => {
   const [productos, setProductos] = useState([]);
   const [selectProduct, setSelectProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+  const today = new Date();
+  const formattedDate = today.toISOString().split('T')[0]; // formato YYYY-MM-DD
    // Fechas y departamento
-   const [startDate, setStartDate] = useState('2025-01-01');
-   const [endDate, setEndDate] = useState('2025-05-03');
+   const [startDate, setStartDate] = useState(formattedDate);
+   const [endDate, setEndDate] = useState(formattedDate);
    const [departmentName, setDepartmentName] = useState('TODOS LOS DEPARTAMENTOS');
 
   const token = useAuthStore((state) => state.token);
@@ -52,10 +53,7 @@ const InvetoryTable = ({ productName }) => {
     }
   }, [token, productName]);
 
-  useEffect(() => {
-    const ahora = new Date();
-    setDate(ahora.toLocaleString('es-MX'));
-  }, []);
+ 
 
   return (
     <div className="container mt-4">
