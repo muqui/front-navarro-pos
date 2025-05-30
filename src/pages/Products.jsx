@@ -24,7 +24,8 @@ export const Products = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setPage(1); // Reinicia la página
-    setSearchTerm(value.trim());
+    //setSearchTerm(value.trim());
+    setSearchTerm(value);
     console.log("Buscando:", value);
   };
 

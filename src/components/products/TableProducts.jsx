@@ -7,7 +7,7 @@ import Modal from '../Modal';
 import ProductForm from '../ProductForm';
 
 export const TableProducts = ({ searchTerm, page, setPage }) => {
-
+  
   const [activeModal, setActiveModal] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -23,7 +23,8 @@ export const TableProducts = ({ searchTerm, page, setPage }) => {
   };
 
   const handleViewProduct = (product) => {
-    console.log("Producto seleccionado:", product);
+  
+    setSelectedProduct(product);
     openModal('product')
   };
 
@@ -168,7 +169,7 @@ export const TableProducts = ({ searchTerm, page, setPage }) => {
 
       {activeModal === 'product' && (
         <Modal showModal={true} handleClose={closeModal}>
-          <ProductForm />
+          <ProductForm  product={selectedProduct}/>
         </Modal>
       )}
 
