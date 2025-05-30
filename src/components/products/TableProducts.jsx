@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/auth';
 import { API_URLS, buildUrl } from '../../config/apiConfig';
 import Modal from '../Modal';
 import ProductForm from '../ProductForm';
+import { InventoryForm } from '../InventoryForm';
 
 export const TableProducts = ({ searchTerm, page, setPage }) => {
   
@@ -26,6 +27,12 @@ export const TableProducts = ({ searchTerm, page, setPage }) => {
   
     setSelectedProduct(product);
     openModal('product')
+  };
+
+  const handleaddInventory = (product) => {
+  
+    setSelectedProduct(product);
+    openModal('inventory')
   };
 
   const closeModal = () => {
@@ -138,7 +145,7 @@ export const TableProducts = ({ searchTerm, page, setPage }) => {
                     <button className="btn btn-sm btn-primary me-2" onClick={() => handleViewProduct(product)}>Ver</button>
                   </td>
                   <td>
-                    <button className="btn btn-sm btn-secondary me-2">Agregar</button>
+                    <button className="btn btn-sm btn-secondary me-2" onClick={() => handleaddInventory(product)}>Agregar</button> 
                   </td>
                 </tr>
               ))}
@@ -170,6 +177,12 @@ export const TableProducts = ({ searchTerm, page, setPage }) => {
       {activeModal === 'product' && (
         <Modal showModal={true} handleClose={closeModal}>
           <ProductForm  product={selectedProduct}/>
+        </Modal>
+      )}
+
+{activeModal === 'inventory' && (
+        <Modal showModal={true} handleClose={closeModal}>
+          <InventoryForm  product={selectedProduct} />
         </Modal>
       )}
 

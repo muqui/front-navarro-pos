@@ -91,7 +91,7 @@ const ProductForm = ({ product }) => {
       };
   
       await axios.patch(
-        `https://back-navarro-pos.duckdns.org/products/${values.barcode}`,
+        `${buildUrl(API_URLS.products)}/${values.barcode}`,
         updatedProduct,
         {
           
