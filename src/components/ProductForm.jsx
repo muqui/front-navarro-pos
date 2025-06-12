@@ -6,10 +6,10 @@ import { buildUrl, API_URLS } from '../config/apiConfig';
 import { useAuthStore } from '../store/auth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const ProductForm = ({ product }) => {
+const ProductForm = ({ product = null, onSuccess }) => {
   const [departments, setDepartments] = useState([]);
   const token = useAuthStore((state) => state.token);
-
+  const isEdit = !!product;
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -73,8 +73,7 @@ const ProductForm = ({ product }) => {
 
   const handleSubmit = async (values) => {
     try {
-      console.log('Datos del formulario:', values);
-      const updatedProduct = {
+      const payload = {
         barcode: values.barcode,
         howToSell: values.howToSell,
         categoryId: values.categoryId,
@@ -88,25 +87,51 @@ const ProductForm = ({ product }) => {
         useInventory: values.useInventory,
         packageProducts: values.packageProducts,
         gain: parseFloat(values.gain),
+        imgUrl: "https://imagen.com/1",
+        stocktaking: true,
+        entriy: 1,
+        output: 1, 
+        supplier: 'Cornejo',
+        quantity: 1
       };
-  
-      await axios.patch(
-        `${buildUrl(API_URLS.products)}/${values.barcode}`,
-        updatedProduct,
-        {
-          
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-       
-      );
-      console.log('actualizar')
-      console.log(updatedProduct)
-      alert('Producto actualizado con éxito');
+
+      if (isEdit) {
+        await axios.patch(
+          `${buildUrl(API_URLS.products)}/${values.barcode}`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert('Producto actualizado con éxito');
+      } else {
+        await axios.post(
+          buildUrl(API_URLS.products),
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert('Producto creado con éxito');
+      }
+
+      if (onSuccess) onSuccess(); // Para cerrar modal o recargar lista
     } catch (error) {
-      console.error('Error al actualizar producto:', error);
-      alert('Error al actualizar producto');
+      console.error('Error al guardar producto:', error);
+  
+      // Mostrar mensajes detallados del backend
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(
+          'Errores del servidor:\n' +
+          error.response.data.message.join('\n')
+        );
+      } else {
+        alert('Error al guardar producto');
+      }
     }
   };
 
@@ -220,27 +245,6 @@ const ProductForm = ({ product }) => {
 
             
 
-              <div className="col-12">
-                <h5 className="mt-4">Productos del Paquete</h5>
-                <button
-                  type="button"
-                  className="btn btn-outline-primary mb-3"
-                  onClick={() =>
-                    setFieldValue('packageProducts', [
-                      ...values.packageProducts,
-                      { name: 'Producto Ejemplo', quantity: 1 },
-                    ])
-                  }
-                >
-                  Añadir Producto
-                </button>
-
-                {values.packageProducts.map((product, index) => (
-                  <div key={index} className="mb-2">
-                    <strong>{product.name}</strong> - Cantidad: {product.quantity}
-                  </div>
-                ))}
-              </div>
 
               <div className="col-12 text-center mt-4">
                 <button type="submit" className="btn btn-success">Guardar Producto</button>

@@ -144,9 +144,7 @@ export const TableProducts = ({ searchTerm, page, setPage }) => {
                   <td>
                     <button className="btn btn-sm btn-primary me-2" onClick={() => handleViewProduct(product)}>Ver</button>
                   </td>
-                  <td>
-                    <button className="btn btn-sm btn-secondary me-2" onClick={() => handleaddInventory(product)}>Agregar</button> 
-                  </td>
+                 
                 </tr>
               ))}
             </tbody>
