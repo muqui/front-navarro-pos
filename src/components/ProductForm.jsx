@@ -125,10 +125,11 @@ const ProductForm = ({ product = null, onSuccess }) => {
   
       // Mostrar mensajes detallados del backend
       if (error.response && error.response.data && error.response.data.message) {
-        alert(
-          'Errores del servidor:\n' +
-          error.response.data.message.join('\n')
-        );
+        const serverMessage = error.response.data.message;
+alert(
+  'Errores del servidor:\n' +
+  (Array.isArray(serverMessage) ? serverMessage.join('\n') : serverMessage)
+);
       } else {
         alert('Error al guardar producto');
       }
@@ -154,7 +155,7 @@ const ProductForm = ({ product = null, onSuccess }) => {
                   <option value="">Seleccione</option>
                   <option value="Unidad">Unidad</option>
                   <option value="Granel">Granel</option>
-                  <option value="Paquete">Paquete</option>
+                  
                 </Field>
                 <ErrorMessage name="howToSell" component="div" className="text-danger" />
               </div>
